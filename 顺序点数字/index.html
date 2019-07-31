@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>ErrorMonitor</title>
+		<style>
+			body {
+				box-sizing: border-box;
+			}
+			#module1 {
+				display: inline-block;
+				background: grey;
+				margin-left: 400px;
+				margin-top: 150px;
+				position: relative;
+			}
+			.title {
+				position: absolute;
+				height: 40px;
+				top: -40px;
+				left: 0;
+				right: 0;
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				cursor: pointer;
+			}
+			ul,
+			li {
+				padding: 0;
+				margin: 0;
+				list-style: none;
+			}
+			li {
+				display: inline-block;
+				height: 80px;
+				width: 80px;
+				margin-left: 1px;
+				margin-top: 1px;
+				text-align: center;
+				line-height: 80px;
+				cursor: pointer;
+				background: pink;
+			}
+			input {
+				width: 30px;
+				margin-right: 40px;
+				margin-left: 8px;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="module1">
+			<div class="title">
+				<div class="left">计时：<span id="time">0</span></div>
+				<div class="right">
+					长度：<input
+						id="len"
+						onchange="inputChange()"
+						maxlength="1"
+					/><span onclick="start()">开始</span>
+				</div>
+			</div>
+			<div id="module"></div>
+		</div>
+
+		<script>
+			const timeValue = document.getElementById("time");
+			let timer;
+			render();
+			document.getElementById("len").addEventListener("change", e => {
+				const value = e.target.value.replace(/[^0-9]/g, "");
+				if (Number(value > 10)) {
+					alert("太大啦");
+				} else if (Number(value < 3)) {
+					alert("太小啦");
+				} else {
+					clearInterval(timer);
+					render();
+				}
+			});
+			function start() {
+				const startTime = new Date().getTime();
+				timer = setInterval(() => {
+					timeValue.innerText = (
+						(new Date().getTime() - startTime) /
+						1000
+					).toFixed(2);
+				}, 50);
+			}
+			function render() {
+				let len, data;
+				const ul = document.createElement("ul");
+				const module = document.getElementById("module");
+				const lenDom = document.getElementById("len");
+				module.innerHTML = "";
+				len = isFinite(lenDom.value) ? Number(lenDom.value || 5) : 5;
+				data = mixData(len * len);
+				module.style.width = (80 + 1) * len + 1 + "px";
+				module.style.height = (80 + 1) * len + 1 + "px";
+				module.appendChild(ul);
+				data.map(item => {
+					const li = document.createElement("li");
+					li.innerText = item;
+					ul.appendChild(li);
+				});
+				const newData = [];
+				document
+					.getElementsByTagName("ul")[0]
+					.addEventListener("click", e => {
+						const value = Number(e.target.innerText);
+						if (value === newData.length + 1) {
+							newData.push(value);
+							console.log(newData);
+							if (newData.length === len * len) {
+								alert("成功啦");
+								clearInterval(timer);
+							}
+						}
+					});
+			}
+
+			function mixData(len) {
+				var arr = [];
+				for (var i = 0; i < len; i++) {
+					arr[i] = i + 1;
+				}
+				arr.sort(function() {
+					return 0.5 - Math.random();
+				});
+				return arr.join().split(",");
+			}
+		</script>
+	</body>
+</html>
