@@ -88,6 +88,7 @@
 		<div id="curNum">当前值：<span id="curNum">1</span></div>
 		<script>
 			const timeValue = document.getElementById("time");
+			let countTime = 0;
 			let timer;
 			let newData = [];
 			render();
@@ -109,10 +110,11 @@
 				const startTime = new Date().getTime();
 				newData = [];
 				timer = setInterval(() => {
-					timeValue.innerText = (
+					countTime = (
 						(new Date().getTime() - startTime) /
 						1000
 					).toFixed(2);
+					timeValue.innerText = countTime;
 				}, 50);
 			}
 
@@ -145,7 +147,17 @@
 							newData.push(value);
 							curNum.innerHTML = value;
 							if (newData.length === len * len) {
-								alert("时间到");
+								// alert(countTime);
+								countTime = Number(countTime);
+								if (countTime >= 20) {
+									alert("你可以再快一点嘛！");
+								} else if (20 > countTime && countTime >= 10) {
+									alert("加油，你可以做的更好！");
+								} else if (10 > countTime && countTime >= 5) {
+									alert("你简直太棒了！");
+								} else if (5 > countTime && countTime >= 0) {
+									alert("快如闪电！");
+								}
 								clearInterval(timer);
 								timer = null;
 							}
